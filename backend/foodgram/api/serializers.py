@@ -42,7 +42,7 @@ class TokenSerializer(serializers.Serializer):
                     code='authorization'
                 )
         else:
-            msg = 'Необходимо указать "адрес электронной почты" и "пароль".'
+            msg = 'Необходимо указать адрес электронной почты и пароль.'
             raise serializers.ValidationError(
                 msg,
                 code='authorization'
@@ -211,7 +211,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             if int(ingredient.get('amount')) < 1:
                 raise serializers.ValidationError(
-                    'Количество ингредиентов >= 1.'
+                    'Количество ингредиентов не менее одного.'
                 )
         return ingredients
 
