@@ -1,4 +1,4 @@
-import csv
+from csv import DictReader
 
 from django.conf import settings
 from django.core.management import BaseCommand
@@ -14,7 +14,8 @@ class Command(BaseCommand):
                 'r',
                 encoding='utf-8'
         ) as file:
-            reader = csv.DictReader(file)
+            reader = DictReader(file)
             Ingredient.objects.bulk_create(
-                Ingredient(**data) for data in reader)
+                Ingredient(**data) for data in reader
+            )
         self.stdout.write(self.style.SUCCESS('Ингредиенты загружены.'))
