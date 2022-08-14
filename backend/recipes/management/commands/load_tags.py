@@ -13,4 +13,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         Tag.objects.bulk_create(Tag(**tag) for tag in tags)
-        self.stdout.write(self.style.SUCCESS('Теги загружены!'))
+        self.stdout.write(self.style.SUCCESS('Теги загружены.'))
