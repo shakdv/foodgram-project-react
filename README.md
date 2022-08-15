@@ -73,13 +73,13 @@ sudo chmod +x /usr/local/bin/docker-compose
 ```
 mkdir infra
 ```
-* Перенести файлы docker-compose.yml и default.conf на сервер директорию infra:
+* Перенести файлы docker-compose.yml и nginx.conf на сервер директорию infra:
 
 ```
 scp docker-compose.yml username@server_ip:/home/<username>/infra
 ```
 ```
-scp default.conf <username>@<server_ip>:/home/<username>/infra
+scp nginx.conf <username>@<server_ip>:/home/<username>/infra
 ```
 
 Перейдите в каталог:
@@ -157,7 +157,7 @@ sudo docker-compose exec backend python manage.py createsuperuser
 sudo docker-compose exec backend python manage.py collectstatic --no-input
 ```
 
-Дополнительно можно наполнить базу данных ингредиентами и тэгами:
+Дополнительно можно наполнить базу данных ингредиентами и тегами:
 
 ```
 sudo docker-compose exec backend python manage.py load_tags
