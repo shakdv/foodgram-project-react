@@ -196,8 +196,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 'Нужен хотя бы один тег для рецепта!'
             )
         tag_list = []
-        for item in tags:
-            tag = get_object_or_404(Tag, id=item['id'])
+        for tag_name in tags:
+            tag = Tag.objects.filter(name=tag_name)
+            if not tag:
+                raise serializers.ValidationError(
+                    f'Тега {tag_name} не существует.'
+                )
             if tag in tag_list:
                 raise serializers.ValidationError(
                     'Тег должен быть уникальным.'
