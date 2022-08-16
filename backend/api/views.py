@@ -25,7 +25,6 @@ from .serializers import (IngredientSerializer, RecipeReadSerializer,
                           UserListSerializer, UserPasswordSerializer)
 
 User = get_user_model()
-FILENAME = 'shopping_cart.pdf'
 
 
 class TagsViewSet(PermissionAndPaginationMixin,
@@ -49,9 +48,9 @@ class AddAndDeleteSubscribe(generics.RetrieveDestroyAPIView,
         return self.request.user.follower.select_related(
             'following'
         ).prefetch_related(
-            'following__recipe'
+            'following__recipes'
         ).annotate(
-            recipes_count=Count('following__recipe'),
+            recipes_count=Count('following__recipes'),
             is_subscribed=Value(True),
         )
 
@@ -85,12 +84,12 @@ class AddDeleteFavoriteRecipe(GetObjectMixin,
 
     def create(self, request, *args, **kwargs):
         instance = self.get_object()
-        request.user.favorite_recipe.recipe.add(instance)
+        request.user.favorite_recipes.recipe.add(instance)
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def perform_destroy(self, instance):
-        self.request.user.favorite_recipe.recipe.remove(instance)
+        self.request.user.favorite_recipes.recipe.remove(instance)
 
 
 class AddDeleteShoppingCart(GetObjectMixin,
@@ -183,14 +182,14 @@ class RecipesViewSet(viewsets.ModelViewSet):
                 )
             )
         ).select_related('author').prefetch_related(
-            'tags', 'ingredients', 'recipe',
-            'shopping_cart', 'favorite_recipe'
+            'tags', 'ingredients', 'recipes',
+            'shopping_cart', 'favorite_recipes'
         ) if self.request.user.is_authenticated else Recipe.objects.annotate(
             is_in_shopping_cart=Value(False),
             is_favorited=Value(False),
         ).select_related('author').prefetch_related(
-            'tags', 'ingredients', 'recipe',
-            'shopping_cart', 'favorite_recipe')
+            'tags', 'ingredients', 'recipes',
+            'shopping_cart', 'favorite_recipes')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

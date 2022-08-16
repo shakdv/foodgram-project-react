@@ -108,12 +108,12 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='recipe'
+        related_name='recipe_ingredients'
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name='ingredient'
+        related_name='recipe_ingredients'
     )
     amount = models.PositiveSmallIntegerField(
         default=1,
@@ -173,12 +173,12 @@ class FavoriteRecipe(models.Model):
         User,
         on_delete=models.CASCADE,
         null=True,
-        related_name='favorite_recipe',
+        related_name='favorite_recipes',
         verbose_name='Пользователь'
     )
     recipe = models.ManyToManyField(
         Recipe,
-        related_name='favorite_recipe',
+        related_name='favorite_recipes',
         verbose_name='Избранный рецепт'
     )
 
@@ -206,7 +206,7 @@ class ShoppingCart(models.Model):
     )
     recipe = models.ManyToManyField(
         Recipe,
-        related_name='shopping_cart',
+        related_name='in_shopping_cart',
         verbose_name='Покупка'
     )
 
