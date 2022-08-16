@@ -15,33 +15,17 @@ from rest_framework.permissions import (SAFE_METHODS, AllowAny,
 from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
-from api.permissions import IsAdminOrReadOnly
+from .mixins import GetObjectMixin, PermissionAndPaginationMixin
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                             Subscribe, Tag)
 from .serializers import (IngredientSerializer, RecipeReadSerializer,
-                          RecipeWriteSerializer, SubscribeRecipeSerializer,
-                          SubscribeSerializer, TagSerializer, TokenSerializer,
+                          RecipeWriteSerializer, SubscribeSerializer,
+                          TagSerializer, TokenSerializer,
                           UserCreateSerializer, UserListSerializer,
                           UserPasswordSerializer)
 
 User = get_user_model()
 FILENAME = 'shopping_cart.pdf'
-
-
-class GetObjectMixin:
-    serializer_class = SubscribeRecipeSerializer
-    permission_classes = (AllowAny,)
-
-    def get_object(self):
-        recipe_id = self.kwargs['recipe_id']
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        self.check_object_permissions(self.request, recipe)
-        return recipe
-
-
-class PermissionAndPaginationMixin:
-    permission_classes = (IsAdminOrReadOnly,)
-    pagination_class = None
 
 
 class TagsViewSet(PermissionAndPaginationMixin,
@@ -247,13 +231,9 @@ def set_password(request):
         data=request.data,
         context={'request': request}
     )
-    if serializer.is_valid():
-        serializer.save()
-        return Response(
-            {'message': 'Пароль изменен!'},
-            status=status.HTTP_201_CREATED
-        )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
     return Response(
-        {'error': 'Введите верные данные!'},
-        status=status.HTTP_400_BAD_REQUEST
+        {'message': 'Пароль изменен!'},
+        status=status.HTTP_201_CREATED
     )
