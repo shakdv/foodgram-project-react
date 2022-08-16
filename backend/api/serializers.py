@@ -195,18 +195,18 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Нужен хотя бы один тег для рецепта!'
             )
-        tag_list = []
-        for tag_name in tags:
-            tag = Tag.objects.filter(name=tag_name)
-            if not tag:
-                raise serializers.ValidationError(
-                    f'Тега {tag_name} не существует.'
-                )
-            if tag in tag_list:
-                raise serializers.ValidationError(
-                    'Тег должен быть уникальным.'
-                )
-            tag_list.append(tag)
+        # tag_list = []
+        # for tag_name in tags:
+        #     tag = Tag.objects.filter(name=tag_name)
+        #     if not tag:
+        #         raise serializers.ValidationError(
+        #             f'Тега {tag_name} не существует.'
+        #         )
+        #     if tag in tag_list:
+        #         raise serializers.ValidationError(
+        #             'Тег должен быть уникальным.'
+        #         )
+        #     tag_list.append(tag)
         return data
 
     def validate_cooking_time(self, cooking_time):
