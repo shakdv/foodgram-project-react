@@ -84,7 +84,7 @@ scp nginx.conf <username>@<server_ip>:/home/<username>/infra
 
 Перейдите в каталог:
 ```bash
-cd infra
+cd infra/
 ```
 
 Добавьте файл .env в котором хранится SECRET_KEY и настройки БД:
