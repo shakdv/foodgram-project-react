@@ -182,14 +182,14 @@ class RecipesViewSet(viewsets.ModelViewSet):
                 )
             )
         ).select_related('author').prefetch_related(
-            'tags', 'ingredients', 'recipes',
-            'in_shopping_cart', 'favorite_recipes'
+            'tags', 'ingredients', 'recipe',
+            'shopping_cart', 'favorite_recipe'
         ) if self.request.user.is_authenticated else Recipe.objects.annotate(
             is_in_shopping_cart=Value(False),
             is_favorited=Value(False),
         ).select_related('author').prefetch_related(
-            'tags', 'ingredients', 'recipes',
-            'in_shopping_cart', 'favorite_recipes')
+            'tags', 'ingredients', 'recipe',
+            'shopping_cart', 'favorite_recipe')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
