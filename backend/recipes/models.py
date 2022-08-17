@@ -80,7 +80,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Теги',
-        related_name='recipes'
+        related_name='recipe'
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления в минутах',
@@ -116,13 +116,8 @@ class RecipeIngredient(models.Model):
         related_name='ingredient'
     )
     amount = models.PositiveSmallIntegerField(
-        default=1,
-        validators=(
-            validators.MinValueValidator(
-                1, message='Мин. количество ингредиентов 1'
-            ),
-        ),
         verbose_name='Количество',
+        blank=False
     )
 
     class Meta:
@@ -132,7 +127,9 @@ class RecipeIngredient(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['recipe', 'ingredient'],
-                name='unique ingredient')]
+                name='unique ingredient'
+            )
+        ]
 
 
 class Subscribe(models.Model):
@@ -169,10 +166,9 @@ class Subscribe(models.Model):
 
 
 class FavoriteRecipe(models.Model):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        null=True,
         related_name='favorite_recipe',
         verbose_name='Пользователь'
     )
@@ -185,6 +181,12 @@ class FavoriteRecipe(models.Model):
     class Meta:
         verbose_name = 'Избранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"],
+                name="unique_favorite_recipe",
+            )
+        ]
 
     def __str__(self):
         list_ = [item['name'] for item in self.recipe.values('name')]
