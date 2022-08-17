@@ -172,8 +172,9 @@ class FavoriteRecipe(models.Model):
         related_name='favorite_recipe',
         verbose_name='Пользователь'
     )
-    recipe = models.ManyToManyField(
+    recipe = models.ForeignKey(
         Recipe,
+        on_delete=models.CASCADE,
         related_name='favorite_recipe',
         verbose_name='Избранный рецепт'
     )
