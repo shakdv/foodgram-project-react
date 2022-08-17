@@ -127,7 +127,7 @@ class RecipeIngredient(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['recipe', 'ingredient'],
-                name='unique ingredient'
+                name='unique_ingredient'
             )
         ]
 
@@ -166,15 +166,15 @@ class Subscribe(models.Model):
 
 
 class FavoriteRecipe(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
+        null=True,
         related_name='favorite_recipe',
         verbose_name='Пользователь'
     )
-    recipe = models.ForeignKey(
+    recipe = models.ManyToManyField(
         Recipe,
-        on_delete=models.CASCADE,
         related_name='favorite_recipe',
         verbose_name='Избранный рецепт'
     )
@@ -182,12 +182,6 @@ class FavoriteRecipe(models.Model):
     class Meta:
         verbose_name = 'Избранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "recipe"],
-                name="unique_favorite_recipe",
-            )
-        ]
 
     def __str__(self):
         list_ = [item['name'] for item in self.recipe.values('name')]
