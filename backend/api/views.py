@@ -48,9 +48,9 @@ class AddAndDeleteSubscribe(generics.RetrieveDestroyAPIView,
         return self.request.user.follower.select_related(
             'following'
         ).prefetch_related(
-            'following__recipes'
+            'following__recipe'
         ).annotate(
-            recipes_count=Count('following__recipes'),
+            recipes_count=Count('following__recipe'),
             is_subscribed=Value(True),
         )
 
@@ -206,7 +206,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
             values(
                 'ingredients__name',
                 'ingredients__measurement_unit'
-            ).annotate(amount=Sum('recipes__amount')).order_by())
+            ).annotate(amount=Sum('recipe__amount')).order_by())
         shopping_list = "Список покупок: \n"
         if shopping_cart:
             for index, recipe in enumerate(shopping_cart, start=1):

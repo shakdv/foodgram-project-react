@@ -264,7 +264,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     ingredients = RecipeIngredientSerializer(
         many=True,
         required=True,
-        source='recipes'
+        source='recipe'
     )
     is_favorited = serializers.BooleanField(
         read_only=True
