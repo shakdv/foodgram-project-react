@@ -48,7 +48,7 @@ class AddAndDeleteSubscribe(generics.RetrieveDestroyAPIView,
         return self.request.user.follower.select_related(
             'following'
         ).prefetch_related(
-            'following__recipe'
+            'following__recipes'
         ).annotate(
             recipes_count=Count('following__recipes'),
             is_subscribed=Value(True),
@@ -84,12 +84,12 @@ class AddDeleteFavoriteRecipe(GetObjectMixin,
 
     def create(self, request, *args, **kwargs):
         instance = self.get_object()
-        request.user.favorite_recipe.recipe.add(instance)
+        request.user.favorite_recipes.recipe.add(instance)
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def perform_destroy(self, instance):
-        self.request.user.favorite_recipe.recipe.remove(instance)
+        self.request.user.favorite_recipes.recipe.remove(instance)
 
 
 class AddDeleteShoppingCart(GetObjectMixin,
