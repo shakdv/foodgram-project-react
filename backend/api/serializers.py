@@ -6,6 +6,7 @@ from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
 
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Subscribe, Tag
+from .mixins import GetIsSubscribedMixin
 
 User = get_user_model()
 ERR_MSG = 'Не удается войти в систему с предоставленными учетными данными.'
@@ -49,15 +50,6 @@ class TokenSerializer(serializers.Serializer):
             )
         attrs['user'] = user
         return attrs
-
-
-class GetIsSubscribedMixin:
-
-    def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        if not user.is_authenticated:
-            return False
-        return user.follower.filter(author=obj).exists()
 
 
 class UserListSerializer(GetIsSubscribedMixin, serializers.ModelSerializer):

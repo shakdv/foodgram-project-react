@@ -57,7 +57,7 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='recipe',
+        related_name='recipes',
         verbose_name='Автор'
     )
     name = models.CharField(
@@ -80,7 +80,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Теги',
-        related_name='recipe'
+        related_name='recipes'
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления в минутах',
@@ -108,16 +108,21 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='recipe'
+        related_name='recipe_ingredients'
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name='ingredient'
+        related_name='recipe_ingredients'
     )
     amount = models.PositiveSmallIntegerField(
+        default=1,
+        validators=(
+            validators.MinValueValidator(
+                1, message='Мин. количество ингредиентов 1'
+            ),
+        ),
         verbose_name='Количество',
-        blank=False
     )
 
     class Meta:
@@ -170,12 +175,12 @@ class FavoriteRecipe(models.Model):
         User,
         on_delete=models.CASCADE,
         null=True,
-        related_name='favorite_recipe',
+        related_name='favorite_recipes',
         verbose_name='Пользователь'
     )
     recipe = models.ManyToManyField(
         Recipe,
-        related_name='favorite_recipe',
+        related_name='favorite_recipes',
         verbose_name='Избранный рецепт'
     )
 
