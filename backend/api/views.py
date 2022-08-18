@@ -48,9 +48,9 @@ class AddAndDeleteSubscribe(generics.RetrieveDestroyAPIView,
         return self.request.user.follower.select_related(
             'following'
         ).prefetch_related(
-            'following__recipe'
+            'following__recipes'
         ).annotate(
-            recipes_count=Count('following__recipe'),
+            recipes_count=Count('following__recipes'),
             is_subscribed=Value(True),
         )
 
@@ -182,13 +182,13 @@ class RecipesViewSet(viewsets.ModelViewSet):
                 )
             )
         ).select_related('author').prefetch_related(
-            'tags', 'ingredients', 'recipes',
+            'tags', 'ingredients', 'recipe',
             'shopping_cart', 'favorite_recipe'
         ) if self.request.user.is_authenticated else Recipe.objects.annotate(
             is_in_shopping_cart=Value(False),
             is_favorited=Value(False),
         ).select_related('author').prefetch_related(
-            'tags', 'ingredients', 'recipes',
+            'tags', 'ingredients', 'recipe',
             'shopping_cart', 'favorite_recipe')
 
     def perform_create(self, serializer):
