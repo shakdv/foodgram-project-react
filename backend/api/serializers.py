@@ -185,6 +185,10 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ingredient_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
+            if int(item['amount']) <= 0:
+                raise serializers.ValidationError(
+                    'Количество ингредиента должно быть положительным!'
+                )
             if ingredient in ingredient_list:
                 raise serializers.ValidationError(
                     'Ингредиент должен быть уникальным.'
@@ -304,8 +308,8 @@ class SubscribeSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.BooleanField(
         read_only=True
     )
-    recipes_count = serializers.IntegerField(
-        read_only=True
+    recipes_count = serializers.ReadOnlyField(
+        source='author.recipes.count'
     )
 
     class Meta:
